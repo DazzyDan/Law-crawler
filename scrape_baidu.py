@@ -121,7 +121,7 @@ class Scrape_Baidu:
 
 
 if __name__ == "__main__":
-    search_word = "selenium"
+    search_word = "selenium + 案例分析"
     max_page = 3
     search = Scrape_Baidu(search_word, max_page)
     df_baidu = search.search()

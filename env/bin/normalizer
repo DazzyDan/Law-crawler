@@ -1,4 +1,4 @@
-#!/Users/dazzydan/Dazzy_project/Law_Case_Crawler/app/env/bin/python3
+#!/Users/dazzydan/Dazzy_project/Law_Case_Crawler/app/env/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -14,6 +14,8 @@ class Scrape_Sogou:
         self.url = url
 
         options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
         options.add_experimental_option(
             "prefs", {"profile.managed_default_content_settings.images": 2}
         )  # 不加载图片,加快访问速度

@@ -11,7 +11,7 @@ from chromedriver_py import binary_path
 import time
 
 
-class Crawl_Bashou:
+class Crawl_Wusong:
     def __init__(self, search_word, max_page, case_type):
         url = "https://www.lawsdata.com/#/home"
         self.url = url
@@ -46,13 +46,15 @@ class Crawl_Bashou:
             },
         )
         self.browser.get(self.url)
+        
+        self.login()
 
         # 等待搜索框出现，最多等待10秒，否则报超时错误
         search_input = self.wait.until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "/html/body/div[1]/div[3]/div/div/div[1]/div[3]/div/div[1]/div[2]/input",
+                    "/html/body/div[1]/div/div[1]/div[2]/div[1]/div[2]/div/div[2]/div[1]/input",
                 )
             )
         )
@@ -62,22 +64,11 @@ class Crawl_Bashou:
         search_input.send_keys(Keys.ENTER)
         # 等待10秒钟
         self.browser.implicitly_wait(10)
-        self.login()
-        self.select_case_type()
+        
         result_dict = self.save_results()
 
         self.tear_down()
         # return result_dict
-
-    def select_case_type(self):
-        #'高院案例', '权威案例', '普通案例'
-        case_types = self.browser.find_elements(
-            By.CSS_SELECTOR, ".list-top > .left > ul > li"
-        )
-        for case_type in case_types:
-            if self.case_type == case_type.text.split("(")[0].strip():
-                print(case_type.text.split("(")[0].strip(), ":", self.case_type)
-                self.wait.until(EC.element_to_be_clickable(case_type)).click()
 
     def save_results(self):
         # 找到所有的搜索结果
@@ -86,22 +77,10 @@ class Crawl_Bashou:
             print("STARTING...")
             s += 1
             results = self.browser.find_elements(
-                By.CSS_SELECTOR, "#resultList > .right > .result-list"
-            )[1].find_elements(By.CSS_SELECTOR, ".box")
+                By.CLASS_NAME, "ListItem__Content-sc-1az4p6x-8"
+            )
             for result in results:
-                title = result.find_element(By.CSS_SELECTOR, ".title > p").text.strip()
-                ref_type = result.find_element(
-                    By.CSS_SELECTOR, ".title > .right-title> .right-span"
-                ).text
-                case_footers = result.find_elements(
-                    By.CSS_SELECTOR, ".cont > .case-footer > ul > li"
-                )
-                court = case_footers[0].text
-                cause_of_action = case_footers[1].text
-                trial_procedure = case_footers[2].text
-                doc_type = case_footers[3].text
-                case_num = case_footers[4].text
-
+                title = result.find_element(By.CSS_SELECTOR, "a > span").text.strip()
                 # deeper layer with more content in each page by clicking
                 self.content(result)
 
@@ -118,7 +97,7 @@ class Crawl_Bashou:
             if (
                 len(
                     self.browser.find_elements(
-                        By.CSS_SELECTOR, ".page > ul > .ant-pagination-next"
+                        By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
                     )
                 )
                 > 0
@@ -153,11 +132,12 @@ class Crawl_Bashou:
 
     def login(self):
         # login box
+        login_btn = self.browser.find_elements(By.CSS_SELECTOR, ".btn-wrap > button")[0]
+        
         self.wait.until(
             EC.presence_of_element_located(
                 (
-                    By.XPATH,
-                    '//*[@id="app"]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button',
+                    login_btn
                 )
             )
         ).click()
@@ -167,7 +147,7 @@ class Crawl_Bashou:
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "/html/body/div[1]/div[7]/div/form/div[1]/div/div/span/input",
+                    "/html/body/div[4]/div/div[2]/div/div[2]/div[2]/form/div[1]/div/div/span/span/input",
                 )
             )
         )
@@ -177,31 +157,38 @@ class Crawl_Bashou:
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "/html/body/div[1]/div[7]/div/form/div[2]/div/div/span/input",
+                    "/html/body/div[4]/div/div[2]/div/div[2]/div[2]/form/div[2]/div/div/span/span/input",
                 )
             )
         )
-        pw_input.send_keys("bYK3B27i3jtF6")
+        pw_input.send_keys("EX0w&6t$4A0")
 
         # login button
         login_btn = self.browser.find_element(
-            By.XPATH, "/html/body/div[1]/div[7]/div/form/div[4]/div/div/span/button"
+            By.XPATH, "/html/body/div[4]/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/span/button"
         )
 
         login_btn.click()
 
     def content(self, result):
-        result.find_element(By.CSS_SELECTOR, ".title > p").click()
+        result.find_element(By.TAG_NAME, "a").click()
         newURl = self.browser.window_handles[1]
         self.browser.switch_to.window(newURl)
-        contents = self.browser.find_elements(By.CLASS_NAME, "caipanBody")
-        for content in contents:
-            name = content.find_element(
-                By.CSS_SELECTOR, ".caipanyaodian > .typeText"
-            ).text
-            answers = content.find_elements(By.CLASS_NAME, "yaodianMsg")
-            final_answer = " ".join([a.text for a in answers])
-            print(name, " : ", final_answer)
+        basic_contents = self.browser.find_elements(By.CSS_SELECTOR, ".CaseDetail__DetailText-sc-6dwb4f-11 > dl")
+        content_dict = {}
+        for basic_content in basic_contents:
+            info_name = basic_content.find_element(By.TAG_NAME, "dt").text.strip()
+            info_data = basic_content.find_element(By.TAG_NAME, "dd").text.strip()
+            content_dict[info_name] = info_data
+           
+        more_contents = self.browser.find_elements(By.CSS_SELECTOR, ".CaseDetail__SectionContent-sc-6dwb4f-10 > div")
+        for more_content in more_contents:
+            if "CaseDetail__ParagraphTitle-sc-6dwb4f-13" in str(more_content.get_attribute("class")):
+                content_dict[more_content.text] = None
+            elif "CaseDetail__ParagraphContent-sc-6dwb4f-14" in str(more_content.get_attribute("class")):
+                answers = more_content.find_elements(By.TAG_NAME, "p")
+                final_answer = " ".join([a.text for a in answers])
+                content_dict[list(content_dict.keys())[-1]] = final_answer
 
         ## Solution: output all the info and use 'if' or 'dict' to fetch it later
         # 争议焦点
@@ -220,5 +207,5 @@ if __name__ == "__main__":
     search_word = "诉讼"
     max_page = 2
     case_type = "高院案例"
-    search = Crawl_Bashou(search_word, max_page, case_type)
+    search = Crawl_Wusong(search_word, max_page, case_type)
     search.search()

@@ -17,6 +17,10 @@ lawsdata:
 18145132237
 bYK3B27i3jtF6
 
+wusong
+18145132237
+EX0w&6t$4A0
+
 ## 因为GoogleChrome Driver 出现问题， 选择另一种方法进行下载
 pip install chromedriver-py==108.0.5359.22
 ### 本机的版本是108.0.5359.22 所以选择下载这个

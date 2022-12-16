@@ -12,8 +12,8 @@ import time
 
 
 class Crawl_Wusong:
-    def __init__(self, search_word, max_page, case_type):
-        url = "https://www.lawsdata.com/#/home"
+    def __init__(self, search_word, max_page):
+        url = "https://www.itslaw.com/home"
         self.url = url
 
         options = webdriver.ChromeOptions()
@@ -32,7 +32,6 @@ class Crawl_Wusong:
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.search_word = search_word
         self.max_page = max_page
-        self.case_type = case_type
         self.result = {}
         # self.browser = webdriver.Chrome(
         #     ChromeDriverManager().install(), options=options
@@ -46,8 +45,6 @@ class Crawl_Wusong:
             },
         )
         self.browser.get(self.url)
-        
-        self.login()
 
         # 等待搜索框出现，最多等待10秒，否则报超时错误
         search_input = self.wait.until(
@@ -62,38 +59,58 @@ class Crawl_Wusong:
         search_input.send_keys(self.search_word)
         # 回车
         search_input.send_keys(Keys.ENTER)
-        # 等待10秒钟
-        self.browser.implicitly_wait(10)
-        
+        self.browser.refresh()
+        self.login()
+        self.browser.implicitly_wait(15)
         result_dict = self.save_results()
-
         self.tear_down()
-        # return result_dict
+        return result_dict
 
     def save_results(self):
         # 找到所有的搜索结果
-        s = 0
-        while True:
-            print("STARTING...")
-            s += 1
+        print("STARTING...")
+        # 动态网页 先下一页显示内容 再fetch data
+        # next page
+        for page in range(1, self.max_page):
+            next_page_exist = self.next_page()
+            if next_page_exist is False:
+                break
+        time.sleep(3)
+        # Back to the top
+        self.wait.until(
+            EC.element_to_be_clickable((By.CLASS_NAME, "ant-back-top"))
+        ).click()
+
+        try:
             results = self.browser.find_elements(
                 By.CLASS_NAME, "ListItem__Content-sc-1az4p6x-8"
             )
             for result in results:
-                title = result.find_element(By.CSS_SELECTOR, "a > span").text.strip()
+                title = result.find_element(
+                    By.CSS_SELECTOR, ".ListItem__TitleStyle-sc-1az4p6x-9 > span"
+                ).text.strip()
+                print(title)
                 # deeper layer with more content in each page by clicking
                 self.content(result)
-
-            next_page_exist = self.next_page()
-            print(f"Scraping {s}/{self.max_page}...")
-            if next_page_exist is False or int(s) == int(self.max_page):
-                break
+        except exceptions.StaleElementReferenceException as e:
+            print("查找标题元素异常")
+            print("重新获取元素")
+            results = self.browser.find_elements(
+                By.CLASS_NAME, "ListItem__Content-sc-1az4p6x-8"
+            )
+            for result in results:
+                title = result.find_element(
+                    By.CSS_SELECTOR, ".ListItem__TitleStyle-sc-1az4p6x-9 > span"
+                ).text.strip()
+                print(title)
+                # deeper layer with more content in each page by clicking
+                self.content(result)
 
         return self.result
 
     def next_page(self):
+        self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         try:
-            ## browser should be maximized otherwise another element overlaps the 'next page' button
             if (
                 len(
                     self.browser.find_elements(
@@ -102,8 +119,10 @@ class Crawl_Wusong:
                 )
                 > 0
             ):
+                # scroll to bottom
+
                 i = self.browser.find_element(
-                    By.CSS_SELECTOR, ".page > ul > .ant-pagination-next"
+                    By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
                 )
                 self.wait.until(EC.element_to_be_clickable(i)).click()
                 return True
@@ -113,16 +132,21 @@ class Crawl_Wusong:
         except exceptions.StaleElementReferenceException as e:
             print("查找下一页按键元素异常")
             print("重新获取元素")
+
             if (
                 len(
                     self.browser.find_elements(
-                        By.CSS_SELECTOR, ".page > ul > .ant-pagination-next"
+                        By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
                     )
                 )
                 > 0
             ):
+                # scroll to bottom
+                self.browser.execute_script(
+                    "window.scrollTo(0, document.body.scrollHeight);"
+                )
                 i = self.browser.find_element(
-                    By.CSS_SELECTOR, ".page > ul > .ant-pagination-next"
+                    By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
                 )
                 self.wait.until(EC.element_to_be_clickable(i)).click()
                 return True
@@ -131,17 +155,7 @@ class Crawl_Wusong:
                 return False
 
     def login(self):
-        # login box
-        login_btn = self.browser.find_elements(By.CSS_SELECTOR, ".btn-wrap > button")[0]
-        
-        self.wait.until(
-            EC.presence_of_element_located(
-                (
-                    login_btn
-                )
-            )
-        ).click()
-
+        # login box will pop out
         # input user name
         user_input = self.wait.until(
             EC.presence_of_element_located(
@@ -162,34 +176,36 @@ class Crawl_Wusong:
             )
         )
         pw_input.send_keys("EX0w&6t$4A0")
-
-        # login button
-        login_btn = self.browser.find_element(
-            By.XPATH, "/html/body/div[4]/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/span/button"
-        )
-
-        login_btn.click()
+        pw_input.send_keys(Keys.ENTER)
 
     def content(self, result):
-        result.find_element(By.TAG_NAME, "a").click()
+        result.find_element(By.CLASS_NAME, "ListItem__TitleStyle-sc-1az4p6x-9").click()
         newURl = self.browser.window_handles[1]
         self.browser.switch_to.window(newURl)
-        basic_contents = self.browser.find_elements(By.CSS_SELECTOR, ".CaseDetail__DetailText-sc-6dwb4f-11 > dl")
+        basic_contents = self.browser.find_elements(
+            By.CSS_SELECTOR, ".CaseDetail__DetailText-sc-6dwb4f-11 > dl"
+        )
         content_dict = {}
         for basic_content in basic_contents:
             info_name = basic_content.find_element(By.TAG_NAME, "dt").text.strip()
             info_data = basic_content.find_element(By.TAG_NAME, "dd").text.strip()
             content_dict[info_name] = info_data
-           
-        more_contents = self.browser.find_elements(By.CSS_SELECTOR, ".CaseDetail__SectionContent-sc-6dwb4f-10 > div")
+
+        more_contents = self.browser.find_elements(
+            By.CSS_SELECTOR, ".CaseDetail__SectionContent-sc-6dwb4f-10 > div"
+        )
         for more_content in more_contents:
-            if "CaseDetail__ParagraphTitle-sc-6dwb4f-13" in str(more_content.get_attribute("class")):
+            if "CaseDetail__ParagraphTitle-sc-6dwb4f-13" in str(
+                more_content.get_attribute("class")
+            ):
                 content_dict[more_content.text] = None
-            elif "CaseDetail__ParagraphContent-sc-6dwb4f-14" in str(more_content.get_attribute("class")):
+            elif "CaseDetail__ParagraphContent-sc-6dwb4f-14" in str(
+                more_content.get_attribute("class")
+            ):
                 answers = more_content.find_elements(By.TAG_NAME, "p")
                 final_answer = " ".join([a.text for a in answers])
                 content_dict[list(content_dict.keys())[-1]] = final_answer
-
+        print(content_dict)
         ## Solution: output all the info and use 'if' or 'dict' to fetch it later
         # 争议焦点
         # 诉讼请求
@@ -206,6 +222,5 @@ class Crawl_Wusong:
 if __name__ == "__main__":
     search_word = "诉讼"
     max_page = 2
-    case_type = "高院案例"
-    search = Crawl_Wusong(search_word, max_page, case_type)
+    search = Crawl_Wusong(search_word, max_page)
     search.search()

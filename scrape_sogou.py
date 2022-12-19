@@ -1,11 +1,13 @@
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver.chrome.service import Service
+from chromedriver_py import binary_path
 
 
 class Scrape_Sogou:
@@ -25,9 +27,12 @@ class Scrape_Sogou:
         options.add_experimental_option("useAutomationExtension", False)
         self.search_word = search_word
         self.max_page = max_page
-        self.browser = webdriver.Chrome(
-            ChromeDriverManager().install(), options=options
-        )
+        service_object = Service(binary_path)
+        self.browser = webdriver.Chrome(service=service_object)
+        self.browser.maximize_window()
+        # self.browser = webdriver.Chrome(
+        #     ChromeDriverManager().install(), options=options
+        # )
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.result = {}
 
@@ -111,7 +116,7 @@ class Scrape_Sogou:
                 return False
 
     def tear_down(self):
-        self.browser.close()
+        self.browser.quit()
 
 
 if __name__ == "__main__":

@@ -3,15 +3,18 @@ python -m venv venv
 ### set python version is 3.8
 virtualenv venv --python=/usr/local/bin/python3.8
 
-source env/bin/activate
+source venv/bin/activate
 
 pip install -r requirements.txt
 
+# development version
 export FLASK_APP=app
 
 export FLASK_ENV=development
 
 flask run
+# Production version
+gunicorn -c gunicorn.conf.py app:app
 
 lawsdata:
 18145132237

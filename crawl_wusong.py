@@ -1,13 +1,10 @@
 from selenium import webdriver
-# from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
 from selenium.webdriver import ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from chromedriver_py import binary_path
 import time
 
 
@@ -33,9 +30,6 @@ class Crawl_Wusong:
         self.search_word = search_word
         self.max_page = max_page
         self.result = {}
-        # self.browser = webdriver.Chrome(
-        #     ChromeDriverManager().install(), options=options
-        # )
 
     def search(self):
         self.browser.execute_cdp_cmd(

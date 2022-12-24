@@ -72,7 +72,7 @@ class Crawl_Wusong:
                 next_page_exist = self.next_page()
                 if next_page_exist is False:
                     break
-            
+
                 time.sleep(3)
                 # Back to the top
                 self.wait.until(
@@ -84,7 +84,9 @@ class Crawl_Wusong:
                 By.CLASS_NAME, "ListItem__Content-sc-1az4p6x-8"
             )
             for result in results:
-                result.find_element(By.CLASS_NAME, "ListItem__TitleStyle-sc-1az4p6x-9").click()
+                result.find_element(
+                    By.CLASS_NAME, "ListItem__TitleStyle-sc-1az4p6x-9"
+                ).click()
                 newURl = self.browser.window_handles[1]
                 self.browser.switch_to.window(newURl)
                 # deeper layer with more content in each page by clicking
@@ -99,7 +101,9 @@ class Crawl_Wusong:
                 By.CLASS_NAME, "ListItem__Content-sc-1az4p6x-8"
             )
             for result in results:
-                result.find_element(By.CLASS_NAME, "ListItem__TitleStyle-sc-1az4p6x-9").click()
+                result.find_element(
+                    By.CLASS_NAME, "ListItem__TitleStyle-sc-1az4p6x-9"
+                ).click()
                 newURl = self.browser.window_handles[1]
                 self.browser.switch_to.window(newURl)
                 # deeper layer with more content in each page by clicking
@@ -182,12 +186,14 @@ class Crawl_Wusong:
 
     def content(self):
         content_dict = {}
-        title = self.browser.find_element(By.CLASS_NAME, "CaseDetail__CaseTitle-sc-6dwb4f-2")
+        title = self.browser.find_element(
+            By.CLASS_NAME, "CaseDetail__CaseTitle-sc-6dwb4f-2"
+        )
         content_dict["案件标题"] = title.text.strip()
         basic_contents = self.browser.find_elements(
             By.CSS_SELECTOR, ".CaseDetail__DetailText-sc-6dwb4f-11 > dl"
         )
-        
+
         for basic_content in basic_contents:
             info_name = basic_content.find_element(By.TAG_NAME, "dt").text.strip()
             info_data = basic_content.find_element(By.TAG_NAME, "dd").text.strip()
@@ -208,19 +214,19 @@ class Crawl_Wusong:
                 final_answer = " ".join([a.text for a in answers])
                 content_dict[list(content_dict.keys())[-1]] = final_answer
         return content_dict
-        
 
     def tear_down(self):
         self.browser.quit()
 
 
 if __name__ == "__main__":
-    import codecs 
+    import codecs
     import json
+
     search_word = "诉讼"
     max_page = 1
     search = Crawl_Wusong(search_word, max_page)
     result = search.search()
-    
-    with codecs.open("wusong_case.json", 'w', encoding='utf-8') as f:
+
+    with codecs.open("wusong_case.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=4)

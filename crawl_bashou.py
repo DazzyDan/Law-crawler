@@ -7,6 +7,7 @@ from selenium.common import exceptions
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from chromedriver_py import binary_path
+from selenium.common.exceptions import NoSuchElementException
 import time
 
 
@@ -28,14 +29,11 @@ class Crawl_Bashou:
         service_object = Service(binary_path)
         self.browser = webdriver.Chrome(service=service_object)
         self.browser.maximize_window()
-        self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
+        self.wait = WebDriverWait(self.browser, 20)  # 超时时长为10s
         self.search_word = search_word
         self.max_page = max_page
         self.case_type = case_type
-        self.result = {}
-        # self.browser = webdriver.Chrome(
-        #     ChromeDriverManager().install(), options=options
-        # )
+        self.result = []
 
     def search(self):
         self.browser.execute_cdp_cmd(
@@ -63,19 +61,20 @@ class Crawl_Bashou:
         self.browser.implicitly_wait(10)
         self.login()
         self.select_case_type()
-        result_dict = self.save_results()
+        case_result = self.save_results()
 
         self.tear_down()
-        # return result_dict
+        return case_result
 
     def select_case_type(self):
         #'高院案例', '权威案例', '普通案例'
         case_types = self.browser.find_elements(
-            By.CSS_SELECTOR, ".list-top > .left > ul > li"
+            By.CSS_SELECTOR,
+            "#resultList>.right>.result-list>.list-top > .left > ul > li",
         )
         for case_type in case_types:
             if self.case_type == case_type.text.split("(")[0].strip():
-                print(case_type.text.split("(")[0].strip(), ":", self.case_type)
+                # print(case_type.text.split("(")[0].strip(), ":", self.case_type)
                 self.wait.until(EC.element_to_be_clickable(case_type)).click()
 
     def save_results(self):
@@ -88,27 +87,32 @@ class Crawl_Bashou:
                 By.CSS_SELECTOR, "#resultList > .right > .result-list"
             )[1].find_elements(By.CSS_SELECTOR, ".box")
             for result in results:
-                title = result.find_element(By.CSS_SELECTOR, ".title > p").text.strip()
-                ref_type = result.find_element(
-                    By.CSS_SELECTOR, ".title > .right-title> .right-span"
-                ).text
-                case_footers = result.find_elements(
-                    By.CSS_SELECTOR, ".cont > .case-footer > ul > li"
-                )
-                court = case_footers[0].text
-                cause_of_action = case_footers[1].text
-                trial_procedure = case_footers[2].text
-                doc_type = case_footers[3].text
-                case_num = case_footers[4].text
-
                 # deeper layer with more content in each page by clicking
-                self.content(result)
+                # To the deeper page
+                result.find_element(By.CSS_SELECTOR, ".title > p").click()
+                newURl = self.browser.window_handles[1]
+                self.browser.switch_to.window(newURl)
+                # Skip intro
+                try:
+                    self.browser.find_element(
+                        By.CLASS_NAME, "introjs-skipbutton"
+                    ).click()
+                except NoSuchElementException:
+                    print("Not found skip button...")
+
+                # Fetch useful data
+                case = self.content()
+                self.result.append(case)
+                print(self.result)
+                # Back to the original page
+                self.browser.close()
+                self.browser.switch_to.window(self.browser.window_handles[0])
 
             next_page_exist = self.next_page()
             print(f"Scraping {s}/{self.max_page}...")
             if next_page_exist is False or int(s) == int(self.max_page):
                 break
-
+            print(self.result)
         return self.result
 
     def next_page(self):
@@ -153,7 +157,7 @@ class Crawl_Bashou:
     def login(self):
         # login box
         self.wait.until(
-            EC.presence_of_element_located(
+            EC.element_to_be_clickable(
                 (
                     By.XPATH,
                     '//*[@id="app"]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button',
@@ -189,35 +193,79 @@ class Crawl_Bashou:
 
         login_btn.click()
 
-    def content(self, result):
-        result.find_element(By.CSS_SELECTOR, ".title > p").click()
-        newURl = self.browser.window_handles[1]
-        self.browser.switch_to.window(newURl)
+    def content(self):
+        case = {}
+        # Fetch useful data
+        time.sleep(3)
+        # 案由
+        title = self.browser.find_element(By.CLASS_NAME, "titleBiao").text.strip()
+        case["案由"] = title
+        # 基本信息
+        basic_info = self.browser.find_elements(By.CLASS_NAME, "jibenLi")
+        for i in basic_info:
+            info_name = "".join(
+                [
+                    t.text.strip()
+                    for t in i.find_elements(By.CSS_SELECTOR, ".jibendivone > span")
+                ]
+            )
+            print(info_name)
+            if info_name == "案例来源":
+                info_value = i.find_element(By.CLASS_NAME, "jibendivtwo1").text.strip()
+                continue
+            elif info_name == "案号":
+                # 案号 需要点击显示全部案号
+                case_num_eye = i.find_element(
+                    By.CSS_SELECTOR, ".jibendivtwo > div > img"
+                )
+                self.wait.until(EC.element_to_be_clickable(case_num_eye)).click()
+            info_value = i.find_element(By.CLASS_NAME, "jibendivtwo").text.strip()
+            print(info_value)
+            case[info_name] = info_value
+        # 侧边信息
+        try:
+            other_info = self.browser.find_elements(By.CLASS_NAME, "fatiaofagui")
+            for i in other_info:
+                info_key = i.find_element(By.CLASS_NAME, "jibenxinxibiaoti")
+                if "法律依据" in info_key:
+                    legals = i.find_elements(
+                        By.CSS_SELECTOR, ".ant-collapse-header > div:nth-child(2)"
+                    )
+                    legal_basis = [l.text.split("查")[0].strip() for l in legals]
+                    case["法律依据"] = legal_basis
+                    print(legal_basis)
+                elif "诉讼请求" in info_key:
+                    lawsuit_req = i.find_element(
+                        By.CLASS_NAME, "fatiaofaguiOver"
+                    ).text.strip()
+                    case["诉讼请求"] = lawsuit_req
+                    print(lawsuit_req)
+        except NoSuchElementException:
+            print("Not found other info like legals or lawsuit...")
+
+        # 案情细节
         contents = self.browser.find_elements(By.CLASS_NAME, "caipanBody")
         for content in contents:
-            name = content.find_element(
+            cont_name = content.find_element(
                 By.CSS_SELECTOR, ".caipanyaodian > .typeText"
-            ).text
-            answers = content.find_elements(By.CLASS_NAME, "yaodianMsg")
-            final_answer = " ".join([a.text for a in answers])
-            print(name, " : ", final_answer)
+            ).text.strip()
+            cont_value = content.find_elements(By.CLASS_NAME, "yaodianMsg")
+            final_cont_value = " ".join([a.text for a in cont_value])
 
-        ## Solution: output all the info and use 'if' or 'dict' to fetch it later
-        # 争议焦点
-        # 诉讼请求
-        # 裁判结果 id= type6 / type8
-        # 法律依据 相关法条 id = type2
-        # 审结日期
-        self.browser.close()
-        self.browser.switch_to.window(self.browser.window_handles[0])
+            case[cont_name] = final_cont_value
+        return case
 
     def tear_down(self):
         self.browser.quit()
 
 
 if __name__ == "__main__":
+    import json
+
     search_word = "诉讼"
-    max_page = 2
-    case_type = "高院案例"
+    max_page = 1
+    case_type = "普通案例"
     search = Crawl_Bashou(search_word, max_page, case_type)
-    search.search()
+    case_result = search.search()
+    with open("bashou_case.json", "w") as fp:
+        json.dump(case_result, fp, indent=4)

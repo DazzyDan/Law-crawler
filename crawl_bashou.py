@@ -226,20 +226,16 @@ class Crawl_Bashou:
         try:
             other_info = self.browser.find_elements(By.CLASS_NAME, "fatiaofagui")
             for i in other_info:
-                info_key = i.find_element(By.CLASS_NAME, "jibenxinxibiaoti")
+                info_key = i.find_element(By.CLASS_NAME, "jibenxinxibiaoti").text
                 if "法律依据" in info_key:
                     legals = i.find_elements(
                         By.CSS_SELECTOR, ".ant-collapse-header > div:nth-child(2)"
                     )
-                    legal_basis = [l.text.split("查")[0].strip() for l in legals]
+                    legal_basis = "; ".join(
+                        [l.text.split("查")[0].strip() for l in legals]
+                    )
                     case["法律依据"] = legal_basis
                     print(legal_basis)
-                elif "诉讼请求" in info_key:
-                    lawsuit_req = i.find_element(
-                        By.CLASS_NAME, "fatiaofaguiOver"
-                    ).text.strip()
-                    case["诉讼请求"] = lawsuit_req
-                    print(lawsuit_req)
         except NoSuchElementException:
             print("Not found other info like legals or lawsuit...")
 
@@ -261,11 +257,12 @@ class Crawl_Bashou:
 
 if __name__ == "__main__":
     import json
+    import codecs
 
     search_word = "诉讼"
     max_page = 1
     case_type = "普通案例"
     search = Crawl_Bashou(search_word, max_page, case_type)
     case_result = search.search()
-    with open("bashou_case.json", "w") as fp:
-        json.dump(case_result, fp, indent=4)
+    with codecs.open("bashou_new_case.json", "w", encoding="utf-8") as f:
+        json.dump(case_result, f, ensure_ascii=False, indent=4)

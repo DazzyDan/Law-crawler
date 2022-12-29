@@ -189,15 +189,19 @@ class Crawl_Wusong:
         title = self.browser.find_element(
             By.CLASS_NAME, "CaseDetail__CaseTitle-sc-6dwb4f-2"
         )
-        content_dict["案件标题"] = title.text.strip()
+        content_dict["案由"] = title.text.strip()
         basic_contents = self.browser.find_elements(
             By.CSS_SELECTOR, ".CaseDetail__DetailText-sc-6dwb4f-11 > dl"
         )
 
         for basic_content in basic_contents:
-            info_name = basic_content.find_element(By.TAG_NAME, "dt").text.strip()
+            info_name = basic_content.find_element(By.TAG_NAME, "dt").text.split("：")[0].strip()
             info_data = basic_content.find_element(By.TAG_NAME, "dd").text.strip()
-            content_dict[info_name] = info_data
+            if info_name not in content_dict.keys():
+                content_dict[info_name] = info_data
+        if "案件类型" in content_dict.keys():
+            content_dict["案件类型"] = content_dict["案件类型"] + content_dict.pop('文书性质', '')
+            
 
         more_contents = self.browser.find_elements(
             By.CSS_SELECTOR, ".CaseDetail__SectionContent-sc-6dwb4f-10 > div"
@@ -206,13 +210,23 @@ class Crawl_Wusong:
             if "CaseDetail__ParagraphTitle-sc-6dwb4f-13" in str(
                 more_content.get_attribute("class")
             ):
-                content_dict[more_content.text] = None
+                more_content_name = more_content.text.split("：")[0].strip()
+                if "结果" in more_content_name:
+                    more_content_name = "裁判结果"
+                elif "过程" in more_content_name:
+                    more_content_name = "审理经过"
+                content_dict[more_content_name] = None
             elif "CaseDetail__ParagraphContent-sc-6dwb4f-14" in str(
                 more_content.get_attribute("class")
             ):
                 answers = more_content.find_elements(By.TAG_NAME, "p")
                 final_answer = " ".join([a.text for a in answers])
                 content_dict[list(content_dict.keys())[-1]] = final_answer
+                if list(content_dict.keys())[-1] == "本院认为":
+                    final_answer_legal = final_answer.split("。")[-1]
+                    content_dict["法律依据"] = final_answer_legal
+                
+
         return content_dict
 
     def tear_down(self):
@@ -228,5 +242,5 @@ if __name__ == "__main__":
     search = Crawl_Wusong(search_word, max_page)
     result = search.search()
 
-    with codecs.open("wusong_case.json", "w", encoding="utf-8") as f:
+    with codecs.open("wusong_new_case.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=4)

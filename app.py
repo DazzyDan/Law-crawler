@@ -59,10 +59,11 @@ def search_case():
     if request.method == "POST":
         search_wd = request.form["search_wd_input"]
         search_page = request.form["search_page"]
-        case_type = request.form.get("case_chose")
+        case_type = request.form.getlist("case_chose")
         error = None
         print(search_wd)
         print(search_page)
+        print(case_type)
         if not search_wd:
             error = "search wd is required."
         elif not search_page:
@@ -72,14 +73,16 @@ def search_case():
 
         if error is None:
             #bashou
-            # bashou = Crawl_Bashou(search_wd, search_page, case_type)
-            # bashou_list = bashou.search()
-            # time.sleep(3)
-            with codecs.open('bashou_case.json', 'r', 'utf-8') as data_file:
+            # for type in case_type:
+                # bashou = Crawl_Bashou(search_wd, search_page, type)
+                # bashou_list = bashou.search()
+                # time.sleep(3)
+            with codecs.open('wusong_new_case.json', 'r', 'utf-8') as data_file:
+                 wusong_list = json.load(data_file)
+            with codecs.open('bashou_new_case.json', 'r', 'utf-8') as data_file:
                  bashou_list = json.load(data_file)
-                 print(bashou_list)
             
-            list_concat = bashou_list
+            list_concat = bashou_list + wusong_list
             #wusong
             # wusong = Crawl_Wusong(search_wd, search_page)
             # wusong_list = bashou.search()

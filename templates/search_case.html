@@ -69,37 +69,45 @@
 </head>
 
 <body>
-    <!-- Content here -->
-    <nav class="navbar navbar-dark bg-primary" >
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="https://img.icons8.com/material-rounded/24/null/scales.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                Law Crawler
-              </a>
-        </div>
-    </nav>
-    <br/>
-    <h5 class="text-center">法律案例爬虫</h1>
-    <br/><br/>
-    <div class="container-fluid">
-        <form class="row g-3" action="/search-case" method="POST">
-            <div class="col-12">
-                <label class="visually-hidden" for="autoSizingInput">问题</label>
-                <input type="text" class="form-control" name="search_wd_input" placeholder="请输入需要搜索的问题" required>
-            </div>
-            <div class="col-md-2">
-                <label class="visually-hidden" for="autoSizingInput">页数</label>
-                <input type="number" class="form-control" name="search_page" placeholder="页数" required>
-            </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img src="https://img.icons8.com/material-rounded/24/null/scales.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+          Law Crawler
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">首页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/search-web">搜索引擎</a>
+            </li>
+  
+            <li class="nav-item">
+              <a class="nav-link disabled" href="/search-case" tabindex="-1" aria-disabled="true">法律案例</a>
+            </li>
+          </ul>
+          <form class="d-flex" action="/search-case" method="POST">
+            <input class="form-control me-2" type="text" placeholder="输入案例关键词" name="search_wd_input" aria-label="Search">
+            <input class="form-control me-2" type="number" name="search_page" placeholder="页数" aria-label="Search">
             <select class="selectpicker" name="case_chose" multiple>
-                <option value="权威案例">权威案例</option>
-                <option value="高院案例">高院案例</option>
-                <option value="普通案例">普通案例</option>
+              <option value="权威案例" selected>权威案例</option>
+              <option value="高院案例">高院案例</option>
+              <option value="普通案例">普通案例</option>
             </select>
-            <button type="submit" class="col-md-2 btn btn-primary">搜索</button>
-        </form>
-    </div>
-    <br/><br/>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    
+    <br/>
+    <h5 class="text-center mb-5">法律案例爬虫</h1>
     {% if results %}
     <div class="alert alert-success" role="alert">
         为您找到相关结果约{{results|length}}个
@@ -179,10 +187,54 @@
     </div>
     {% endfor %}
     {% endif %}
-    <footer>
-        <p>Qiudan WANG</p>
-        <p><a href="https://www.github.com/Dazzydan">www.github.com/Dazzydan</a></p>
+    <!-- Footer -->
+    <footer
+            class="text-center text-lg-start text-dark bg-light">
+  
+      <!-- Section: Links  -->
+      <section>
+        <div class="container text-center text-md-start mt-5">
+          <!-- Grid row -->
+            <div class="row mt-3">
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                <!-- Content -->
+                    <h6 class="text-uppercase fw-bold">Dazzy DAN</h6>
+                    <hr
+                    class="mb-4 mt-0 d-inline-block mx-auto"
+                    style="width: 60px; background-color: #2aa33f; height: 2px"
+                    />
+                </div>
+                <!-- Grid column -->
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Content -->
+                        <h6 ><a href="https://www.github.com/Dazzydan">www.github.com/Dazzydan</a></h6>
+                        <hr
+                        class="mb-4 mt-0 d-inline-block mx-auto"
+                        style="width: 60px; background-color: #2aa33f; height: 2px"
+                        />
+                    </div>
+                    <!-- Grid column -->
+            </div>
+          <!-- Grid row -->
+        </div>
+      </section>
+      <!-- Section: Links  -->
+  
+      <!-- Copyright -->
+      <div
+           class="text-center p-3"
+           style="background-color: rgba(0, 0, 0, 0.2)"
+           >
+        © 2020 Copyright:
+        <a class="text-dark" href="https://mdbootstrap.com/"
+           >MDBootstrap.com</a
+          >
+      </div>
+      <!-- Copyright -->
     </footer>
+    <!-- Footer -->
     <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
     
     <script>

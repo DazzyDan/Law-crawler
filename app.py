@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder="templates")
 
 @app.route("/")
 def index():
-    return "Hello World"
+    return render_template("homepage.html")
 
 
 @app.route("/search-web", methods=["GET", "POST"])
@@ -24,10 +24,11 @@ def search_wd():
     if request.method == "POST":
         search_wd = request.form["search_wd_input"]
         search_page = request.form["search_page"]
-        search_method = request.form.getlist("search_method")
+        search_method = request.form.getlist("case_chose")
         error = None
         print(search_wd)
         print(search_page)
+        print(search_method)
         if not search_wd:
             error = "search_wd is required."
         elif not search_page:
@@ -37,19 +38,21 @@ def search_wd():
 
         if error is None:
             for i in search_method:
-                if i == "baidu":
+                print(i)
+                if i == "百度":
                     baidu = Scrape_Baidu(search_wd, search_page)
                     baidu_dict = baidu.search()
                     time.sleep(1)
-                elif i == "sogou":
+                elif i == "搜狗":
                     sogou = Scrape_Sogou(search_wd, search_page)
                     sogou_dict = sogou.search()
                     time.sleep(1)
-                elif i == "wechat":
+                elif i == "微信":
                     wechat = Scrape_Wechat(search_wd, search_page)
                     wechat_dict = wechat.search()
             dict_concat = {**baidu_dict, **sogou_dict, **wechat_dict}
     return render_template("search_web.html", results=dict_concat)
+
 
 @app.route("/search-case", methods=["GET", "POST"])
 def search_case():
@@ -72,21 +75,23 @@ def search_case():
             error = "case type is required"
 
         if error is None:
-            #bashou
+            # bashou
             # for type in case_type:
-                # bashou = Crawl_Bashou(search_wd, search_page, type)
-                # bashou_list = bashou.search()
-                # time.sleep(3)
-            with codecs.open('wusong_new_case.json', 'r', 'utf-8') as data_file:
-                 wusong_list = json.load(data_file)
-            with codecs.open('bashou_new_case.json', 'r', 'utf-8') as data_file:
-                 bashou_list = json.load(data_file)
-            
+            # bashou = Crawl_Bashou(search_wd, search_page, type)
+            # bashou_list = bashou.search()
+            # time.sleep(3)
+            with codecs.open("wusong_new_case.json", "r", "utf-8") as data_file:
+                wusong_list = json.load(data_file)
+            with codecs.open("bashou_new_case.json", "r", "utf-8") as data_file:
+                bashou_list = json.load(data_file)
+
             list_concat = bashou_list + wusong_list
-            #wusong
+            # wusong
             # wusong = Crawl_Wusong(search_wd, search_page)
             # wusong_list = bashou.search()
             # dict_concat = {**bashou_list, **wusong_list}
     return render_template("search_case.html", results=list_concat)
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

@@ -67,7 +67,7 @@ class Crawl_Wusong:
         print("STARTING...")
         # 动态网页 先下一页显示内容 再fetch data
         # next page
-        if self.max_page > 1:
+        if int(self.max_page) > 1:
             for page in range(1, self.max_page):
                 next_page_exist = self.next_page()
                 if next_page_exist is False:
@@ -195,13 +195,15 @@ class Crawl_Wusong:
         )
 
         for basic_content in basic_contents:
-            info_name = basic_content.find_element(By.TAG_NAME, "dt").text.split("：")[0].strip()
+            info_name = (
+                basic_content.find_element(By.TAG_NAME, "dt").text.split("：")[0].strip()
+            )
             info_data = basic_content.find_element(By.TAG_NAME, "dd").text.strip()
             if info_name not in content_dict.keys():
                 content_dict[info_name] = info_data
+        print(content_dict)
         if "案件类型" in content_dict.keys():
-            content_dict["案件类型"] = content_dict["案件类型"] + content_dict.pop('文书性质', '')
-            
+            content_dict["案件类型"] = content_dict["案件类型"] + content_dict.pop("文书性质", "")
 
         more_contents = self.browser.find_elements(
             By.CSS_SELECTOR, ".CaseDetail__SectionContent-sc-6dwb4f-10 > div"
@@ -211,10 +213,14 @@ class Crawl_Wusong:
                 more_content.get_attribute("class")
             ):
                 more_content_name = more_content.text.split("：")[0].strip()
+                if more_content_name == "裁判日期":
+                    more_content_name = "裁判日期2"
+
                 if "结果" in more_content_name:
                     more_content_name = "裁判结果"
                 elif "过程" in more_content_name:
                     more_content_name = "审理经过"
+
                 content_dict[more_content_name] = None
             elif "CaseDetail__ParagraphContent-sc-6dwb4f-14" in str(
                 more_content.get_attribute("class")
@@ -225,8 +231,9 @@ class Crawl_Wusong:
                 if list(content_dict.keys())[-1] == "本院认为":
                     final_answer_legal = final_answer.split("。")[-1]
                     content_dict["法律依据"] = final_answer_legal
-                
+        content_dict.pop("裁判日期2", "")
 
+        print(content_dict)
         return content_dict
 
     def tear_down(self):

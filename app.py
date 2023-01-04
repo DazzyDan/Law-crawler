@@ -76,20 +76,19 @@ def search_case():
 
         if error is None:
             # bashou
-            # for type in case_type:
-            # bashou = Crawl_Bashou(search_wd, search_page, type)
-            # bashou_list = bashou.search()
-            # time.sleep(3)
-            with codecs.open("wusong_new_case.json", "r", "utf-8") as data_file:
-                wusong_list = json.load(data_file)
-            with codecs.open("bashou_new_case.json", "r", "utf-8") as data_file:
-                bashou_list = json.load(data_file)
-
-            list_concat = bashou_list + wusong_list
+            for type in case_type:
+                bashou = Crawl_Bashou(search_wd, search_page, type)
+                bashou_list = bashou.search()
+                time.sleep(3)
+            # with codecs.open("wusong_new_case.json", "r", "utf-8") as data_file:
+            #     wusong_list = json.load(data_file)
+            # with codecs.open("bashou_new_case.json", "r", "utf-8") as data_file:
+            #     bashou_list = json.load(data_file)
             # wusong
-            # wusong = Crawl_Wusong(search_wd, search_page)
-            # wusong_list = bashou.search()
-            # dict_concat = {**bashou_list, **wusong_list}
+            wusong = Crawl_Wusong(search_wd, search_page)
+            wusong_list = wusong.search()
+            list_concat = bashou_list + wusong_list
+
     return render_template("search_case.html", results=list_concat)
 
 

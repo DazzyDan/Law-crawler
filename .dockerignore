@@ -4,3 +4,5 @@ venv/
 Procfile
 runtime.txt
 target/
+*.json
+json_encode.py

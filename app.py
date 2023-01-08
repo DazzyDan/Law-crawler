@@ -40,14 +40,21 @@ def search_wd():
             for i in search_method:
                 print(i)
                 if i == "百度":
+                    # with codecs.open("baidu_case.json", "r", "utf-8") as data_file:
+                    #     baidu_dict = json.load(data_file)
+
                     baidu = Scrape_Baidu(search_wd, search_page)
                     baidu_dict = baidu.search()
                     time.sleep(1)
                 elif i == "搜狗":
+                    # with codecs.open("sogou_case.json", "r", "utf-8") as data_file:
+                    #     sogou_dict = json.load(data_file)
                     sogou = Scrape_Sogou(search_wd, search_page)
                     sogou_dict = sogou.search()
                     time.sleep(1)
                 elif i == "微信":
+                    # with codecs.open("wechat_case.json", "r", "utf-8") as data_file:
+                    #     wechat_dict = json.load(data_file)
                     wechat = Scrape_Wechat(search_wd, search_page)
                     wechat_dict = wechat.search()
             dict_concat = {**baidu_dict, **sogou_dict, **wechat_dict}

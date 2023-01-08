@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver.chrome.service import Service
+from chromedriver_py import binary_path
 
 
 class Scrape_Sogou:
@@ -31,6 +33,8 @@ class Scrape_Sogou:
         self.browser = webdriver.Chrome(
             options=options, executable_path="/usr/local/bin/chromedriver"
         )
+        # service_object = Service(binary_path)
+        # self.browser = webdriver.Chrome(service=service_object)
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.result = {}
@@ -119,8 +123,13 @@ class Scrape_Sogou:
 
 
 if __name__ == "__main__":
+    import codecs
+    import json
+
     search_word = "selenium"
     max_page = 3
     search = Scrape_Sogou(search_word, max_page)
     df_sogou = search.search()
     search.tear_down()
+    with codecs.open("sogou_case.json", "w", encoding="utf-8") as f:
+        json.dump(df_sogou, f, ensure_ascii=False, indent=4)

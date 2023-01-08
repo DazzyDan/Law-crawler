@@ -26,8 +26,11 @@ class Crawl_Bashou:
             "excludeSwitches", ["enable-automation"]
         )  # 此步骤很重要，设置为开发者模式，防止被各大网站识别出来使用了Selenium
         options.add_experimental_option("useAutomationExtension", False)
-        service_object = Service(binary_path)
-        self.browser = webdriver.Chrome(service=service_object)
+        # service_object = Service(binary_path)
+        # self.browser = webdriver.Chrome(service=service_object)
+        self.browser = webdriver.Chrome(
+            options=options, executable_path="/usr/local/bin/chromedriver"
+        )
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 20)  # 超时时长为10s
         self.search_word = search_word

@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver.chrome.service import Service
+from chromedriver_py import binary_path
 
 
 class Scrape_Wechat:
@@ -31,6 +33,8 @@ class Scrape_Wechat:
         self.browser = webdriver.Chrome(
             options=options, executable_path="/usr/local/bin/chromedriver"
         )
+        # service_object = Service(binary_path)
+        # self.browser = webdriver.Chrome(service=service_object)
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.result = {}
@@ -124,7 +128,12 @@ class Scrape_Wechat:
 
 
 if __name__ == "__main__":
+    import codecs
+    import json
+
     search_word = "selenium"
     max_page = 3
     search = Scrape_Wechat(search_word, max_page)
     df_wechat = search.search()
+    with codecs.open("wechat_case.json", "w", encoding="utf-8") as f:
+        json.dump(df_wechat, f, ensure_ascii=False, indent=4)

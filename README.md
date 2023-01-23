@@ -36,3 +36,4 @@ driver = webdriver.Chrome(service=service_object)
 
 ### 经过尝试之后， 成功运行
 
+docker rm $(docker ps --filter status=exited -q)

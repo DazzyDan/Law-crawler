@@ -4,49 +4,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common import exceptions
-from selenium.webdriver import ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from chromedriver_py import binary_path
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Scrape_Wechat:
     def __init__(self, search_word, max_page):
         url = "https://weixin.sogou.com/"
         self.url = url
-
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_experimental_option(
-            "prefs", {"profile.managed_default_content_settings.images": 2}
-        )  # 不加载图片,加快访问速度
-        options.add_experimental_option(
-            "excludeSwitches", ["enable-automation"]
-        )  # 此步骤很重要，设置为开发者模式，防止被各大网站识别出来使用了Selenium
-        options.add_experimental_option("useAutomationExtension", False)
-        options.add_argument("--disable-extensions")
-        options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
         self.search_word = search_word
         self.max_page = max_page
-        self.browser = webdriver.Chrome(
-            options=options, executable_path="/usr/local/bin/chromedriver"
-        )
-        # service_object = Service(binary_path)
-        # self.browser = webdriver.Chrome(service=service_object)
+        self.browser = webdriver.Remote('http://selenium-hub:4444/wd/hub',
+                          desired_capabilities=DesiredCapabilities.CHROME)
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.result = {}
 
     def search(self):
         # 打开百度网页
-        self.browser.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": 'Object.defineProperty(navigator,"webdriver",{get:()=>undefind})'
-            },
-        )
         self.browser.get(self.url)
         # 等待搜索框出现，最多等待10秒，否则报超时错误
         search_input = self.wait.until(

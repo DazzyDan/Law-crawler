@@ -87,10 +87,6 @@ def search_case():
                 bashou = Crawl_Bashou(search_wd, search_page, type)
                 bashou_list = bashou.search()
                 time.sleep(3)
-            # with codecs.open("wusong_new_case.json", "r", "utf-8") as data_file:
-            #     wusong_list = json.load(data_file)
-            # with codecs.open("bashou_new_case.json", "r", "utf-8") as data_file:
-            #     bashou_list = json.load(data_file)
             # wusong
             wusong = Crawl_Wusong(search_wd, search_page)
             wusong_list = wusong.search()

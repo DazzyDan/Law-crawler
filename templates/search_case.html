@@ -100,7 +100,7 @@
               <option value="高院案例">高院案例</option>
               <option value="普通案例">普通案例</option>
             </select>
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button class="btn btn-outline-success" type="submit" onclick="loading();">Search</button>
           </form>
         </div>
       </div>
@@ -108,85 +108,88 @@
     
     <br/>
     <h5 class="text-center mb-5">法律案例爬虫</h1>
-    {% if results %}
-    <div class="alert alert-success" role="alert">
-        为您找到相关结果约{{results|length}}个
-    </div>
-    {% endif %}
-    
-    <div id="result_tb"></div>
-    {% if results %}
-    {% for result in results %} 
-    <div id="details{{ result['案由'] }}" class="modal fade" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">{{result['案由']}}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="container">
-                <div class="row">
-                  <div class="col">
-                    审理法院
-                  </div>
-                  <div class="col">
-                    {{result["审理法院"]}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    案号
-                  </div>
-                  <div class="col">
-                    {{ result["案号"] }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    案件类型
-                  </div>
-                  <div class="col">
-                    {{ result["案件类型"] }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    审理程序
-                  </div>
-                  <div class="col">
-                    {{ result["审理程序"] }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    参考类型
-                  </div>
-                  <div class="col">
-                    {{ result["参考类型"] }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    裁判日期
-                  </div>
-                  <div class="col">
-                    {{ result["裁判日期"] }}
-                  </div>
-                </div>
+    <div id="loading" style="display:none; text-align: center;"><img src="/static/loading.gif" alt="" /></div>
+    <div id="content">
+      {% if results %}
+      <div class="alert alert-success" role="alert">
+          为您找到相关结果约{{results|length}}个
+      </div>
+      {% endif %}
+      
+      <div id="result_tb"></div>
+      {% if results %}
+      {% for result in results %} 
+      <div id="details{{ result['案由'] }}" class="modal fade" tabindex="-1" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">{{result['案由']}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              {% for key, value in result.items() %}
-                {% if key not in ['案由', '审理法院', '案号', '案件类型', '审理程序', '参考类型', '裁判日期'] %}
-                <p class="font-weight-bold">{{key}}</p>
-                <p class="text-lg-left"> {{value}}</p>
-                {% endif %}
-              {% endfor %}
+              <div class="modal-body">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      审理法院
+                    </div>
+                    <div class="col">
+                      {{result["审理法院"]}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      案号
+                    </div>
+                    <div class="col">
+                      {{ result["案号"] }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      案件类型
+                    </div>
+                    <div class="col">
+                      {{ result["案件类型"] }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      审理程序
+                    </div>
+                    <div class="col">
+                      {{ result["审理程序"] }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      参考类型
+                    </div>
+                    <div class="col">
+                      {{ result["参考类型"] }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      裁判日期
+                    </div>
+                    <div class="col">
+                      {{ result["裁判日期"] }}
+                    </div>
+                  </div>
+                </div>
+                {% for key, value in result.items() %}
+                  {% if key not in ['案由', '审理法院', '案号', '案件类型', '审理程序', '参考类型', '裁判日期'] %}
+                  <p class="font-weight-bold">{{key}}</p>
+                  <p class="text-lg-left"> {{value}}</p>
+                  {% endif %}
+                {% endfor %}
+              </div>
             </div>
           </div>
-        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
     </div>
-    {% endfor %}
-    {% endif %}
     <!-- Footer -->
     <footer
             class="text-center text-lg-start text-dark bg-light">
@@ -301,6 +304,12 @@
           $(this).addClass('selected').siblings().removeClass("selected");
       });
     }
+    </script>
+    <script type="text/javascript">
+      function loading(){
+          $("#loading").show();
+          $("#content").hide();       
+      }
     </script>
 
 </body>

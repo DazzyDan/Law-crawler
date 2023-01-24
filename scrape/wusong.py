@@ -9,13 +9,15 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 
 
-class Crawl_Wusong:
+class Scrape_Wusong:
     def __init__(self, search_word, max_page):
         url = "https://www.itslaw.com/home"
         self.url = url
         time.sleep(5)
-        self.browser = webdriver.Remote('http://selenium-hub:4444/wd/hub',
-                          desired_capabilities=DesiredCapabilities.CHROME)
+        self.browser = webdriver.Remote(
+            "http://selenium-hub:4444/wd/hub",
+            desired_capabilities=DesiredCapabilities.CHROME,
+        )
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.search_word = search_word
@@ -24,8 +26,7 @@ class Crawl_Wusong:
 
     def search(self):
         print("wusong web crawl: ")
-        
-        
+
         self.browser.get(self.url)
 
         # 等待搜索框出现，最多等待10秒，否则报超时错误
@@ -45,6 +46,8 @@ class Crawl_Wusong:
         self.login()
         self.browser.implicitly_wait(15)
         result_dict = self.save_results()
+        print("Finish crawling...")
+        print(result_dict)
         self.tear_down()
         return result_dict
 
@@ -61,7 +64,7 @@ class Crawl_Wusong:
 
                 time.sleep(3)
                 # Back to the top
-  
+
             self.wait.until(
                 EC.element_to_be_clickable((By.CLASS_NAME, "ant-back-top"))
             ).click()
@@ -99,7 +102,6 @@ class Crawl_Wusong:
                 self.result.append(content_dict)
                 self.browser.close()
                 self.browser.switch_to.window(self.browser.window_handles[0])
-
         return self.result
 
     def next_page(self):
@@ -114,7 +116,7 @@ class Crawl_Wusong:
                 > 0
             ):
                 # scroll to bottom
-                
+
                 try:
                     i = self.browser.find_element(
                         By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
@@ -123,9 +125,11 @@ class Crawl_Wusong:
                     return True
                 except exceptions.ElementClickInterceptedException as e:
                     print("下一页按键与搜索栏相叠, 须向上滑动一些")
-                    ActionChains(self.browser).move_to_element(self.browser.find_element(
-                        By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
-                    )).click().perform()
+                    ActionChains(self.browser).move_to_element(
+                        self.browser.find_element(
+                            By.CLASS_NAME, "ResultList__LoadMoreStyle-sc-sey7cd-4"
+                        )
+                    ).click().perform()
                     return True
 
             else:
@@ -202,19 +206,19 @@ class Crawl_Wusong:
                     info_name = "审理法院"
                 elif info_data[-1] == "号":
                     info_name = "案号"
-                elif info_data in ["民事", "刑事","行政","执行", "赔偿"]:
+                elif info_data in ["民事", "刑事", "行政", "执行", "赔偿"]:
                     info_name = "案件类型"
                 elif "-" in info_data:
                     info_name = "裁判日期"
-                elif info_data in ["一审", "二审","再审","其他"]:
+                elif info_data in ["一审", "二审", "再审", "其他"]:
                     info_name = "审理程序"
-                elif info_data in ["裁定", "判决","调解","决定","通知","其他"]:
+                elif info_data in ["裁定", "判决", "调解", "决定", "通知", "其他"]:
                     info_name = "文书性质"
                 else:
                     info_name = info_data
             if info_name not in content_dict.keys():
                 content_dict[info_name] = info_data
-        print(content_dict)
+        # print(content_dict)
         if "案件类型" in content_dict.keys():
             content_dict["案件类型"] = content_dict["案件类型"] + content_dict.pop("文书性质", "")
 
@@ -254,19 +258,9 @@ class Crawl_Wusong:
                     print("没有任何信息")
         content_dict.pop("裁判日期2", "")
 
-        print(content_dict)
+        # print(content_dict)
         return content_dict
 
-    def get_basic_dict(data):
-        if "法院" in data:
-            key = "审理法院"
-        elif data[-1] == "号":
-            key = "案号"
-        # elif 文书类型
-        # elif 审理程序
-        # elif 裁判日期
-        return key
-    
     def tear_down(self):
         self.browser.quit()
 
@@ -277,7 +271,7 @@ if __name__ == "__main__":
 
     search_word = "诉讼"
     max_page = 1
-    search = Crawl_Wusong(search_word, max_page)
+    search = Scrape_Wusong(search_word, max_page)
     result = search.search()
 
     with codecs.open("wusong_new_case.json", "w", encoding="utf-8") as f:

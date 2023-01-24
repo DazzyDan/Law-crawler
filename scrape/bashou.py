@@ -9,12 +9,15 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 
 
-class Crawl_Bashou:
+class Scrape_Bashou:
     def __init__(self, search_word, max_page, case_type):
         url = "https://www.lawsdata.com/#/home"
         self.url = url
-        self.browser = webdriver.Remote('http://selenium-hub:4444/wd/hub',
-                          desired_capabilities=DesiredCapabilities.CHROME)
+        time.sleep(5)
+        self.browser = webdriver.Remote(
+            "http://selenium-hub:4444/wd/hub",
+            desired_capabilities=DesiredCapabilities.CHROME,
+        )
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 20)  # 超时时长为10s
         self.search_word = search_word
@@ -29,15 +32,16 @@ class Crawl_Bashou:
         # 等待搜索框出现，最多等待10秒，否则报超时错误
         try:
             self.browser.find_element(
-                By.CSS_SELECTOR, "#app > div.ant-spin-nested-loading > div > div > div.new-dialog > div > button"
+                By.CSS_SELECTOR,
+                "#app > div.ant-spin-nested-loading > div > div > div.new-dialog > div > button",
             ).click()
             self.browser.find_element(
-                By.CSS_SELECTOR, "body > div.introjs-tooltipReferenceLayer > div > div.introjs-tooltipbuttons > a.introjs-button.introjs-skipbutton"
+                By.CSS_SELECTOR,
+                "body > div.introjs-tooltipReferenceLayer > div > div.introjs-tooltipbuttons > a.introjs-button.introjs-skipbutton",
             ).click()
         except NoSuchElementException:
             print("Not found skip button...")
-            
-        
+
         search_input = self.wait.until(
             EC.presence_of_element_located(
                 (
@@ -53,7 +57,7 @@ class Crawl_Bashou:
         print("Search keyword success..")
         # 等待10秒钟
         self.browser.implicitly_wait(10)
-        self.login()      
+        self.login()
         self.select_case_type()
         case_result = self.save_results()
         self.tear_down()
@@ -88,7 +92,7 @@ class Crawl_Bashou:
                 # Skip intro
                 try:
                     self.browser.find_element(
-                        By.XPATH, "/html/body/div[9]/div/div[5]/a[1]"
+                        By.CLASS_NAME, "introjs-skipbutton"
                     ).click()
                 except NoSuchElementException:
                     print("Not found skip button...")
@@ -96,7 +100,7 @@ class Crawl_Bashou:
                 # Fetch useful data
                 case = self.content()
                 self.result.append(case)
-                print(self.result)
+                print("Finish crawling... ")
                 # Back to the original page
                 self.browser.close()
                 self.browser.switch_to.window(self.browser.window_handles[0])
@@ -105,7 +109,7 @@ class Crawl_Bashou:
             print(f"Scraping {s}/{self.max_page}...")
             if next_page_exist is False or int(s) == int(self.max_page):
                 break
-            print(self.result)
+            # print(self.result)
         return self.result
 
     def next_page(self):
@@ -127,7 +131,10 @@ class Crawl_Bashou:
             else:
                 print("Next page doesn't exist")
                 return False
-        except (exceptions.StaleElementReferenceException, exceptions.ElementClickInterceptedException) as e:
+        except (
+            exceptions.StaleElementReferenceException,
+            exceptions.ElementClickInterceptedException,
+        ) as e:
             print("查找下一页按键元素异常")
             print("重新获取元素")
             if (
@@ -156,42 +163,28 @@ class Crawl_Bashou:
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
-                        '/html/body/div[1]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button',
+                        "/html/body/div[1]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button",
                     )
                 )
             ).click()
-        except (exceptions.ElementClickInterceptedException, exceptions.TimeoutException) as e:
+        except (
+            exceptions.ElementClickInterceptedException,
+            exceptions.TimeoutException,
+        ) as e:
             print("查找登陆按键元素异常")
             print("重新获取元素")
             self.browser.refresh()
-            self.browser.save_screenshot('screenshot_re.png')
             self.wait.until(
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
-                        '/html/body/div[1]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button',
+                        "/html/body/div[1]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button",
                     )
                 )
             ).click()
-            
-        print("Login success..")
-        # # input user name
-        # login_boxes = self.browser.find_elements(By.CLASS_NAME, "login")
-        # for login_box in login_boxes:
-        #     print(login_box.get_attribute("style"))
-        #     if login_box.get_attribute("style") == "":
-        #         user_input= login_box.find_element(By.ID, "phone")
-        #         user_input.send_keys("18145132237")
-                
-                
-        #         pw_input = login_box.find_element(By.ID, "password")
-        #         pw_input.send_keys("bYK3B27i3jtF6")
-        #         login_btn = self.browser.find_element(
-        #             By.XPATH, "/form/div[4]/div/div/span/button"
-        #         )
 
-        #         login_btn.click()
-        
+        print("Login success..")
+
         user_input = self.wait.until(
             EC.presence_of_element_located(
                 (
@@ -235,21 +228,21 @@ class Crawl_Bashou:
                     for t in i.find_elements(By.CSS_SELECTOR, ".jibendivone > span")
                 ]
             )
-            print(info_name)
-            if info_name == "案号":
-                # 案号 需要点击显示全部案号
-                case_num_eye = i.find_element(
-                    By.CSS_SELECTOR, ".jibendivtwo > div > img"
-                )
-                self.wait.until(EC.element_to_be_clickable(case_num_eye)).click()
+            # print(info_name)
+            # if info_name == "案号":
+            #     # 案号 需要点击显示全部案号
+            #     case_num_eye = i.find_element(
+            #         By.CSS_SELECTOR, ".jibendivtwo > div > img"
+            #     )
+            #     self.wait.until(EC.element_to_be_clickable(case_num_eye)).click()
             try:
                 info_value = i.find_element(By.CLASS_NAME, "jibendivtwo").text.strip()
             except exceptions.NoSuchElementException as e:
                 print("Class name is not normal")
                 info_value = i.find_element(By.CLASS_NAME, "jibendivtwo1").text.strip()
                 continue
-            
-            print(info_value)
+
+            # print(info_value)
             case[info_name] = info_value
         # 侧边信息
         try:
@@ -264,7 +257,7 @@ class Crawl_Bashou:
                         [l.text.split("查")[0].strip() for l in legals]
                     )
                     case["法律依据"] = legal_basis
-                    print(legal_basis)
+                    # print(legal_basis)
         except NoSuchElementException:
             print("Not found other info like legals or lawsuit...")
 
@@ -291,9 +284,9 @@ if __name__ == "__main__":
     search_word = "诉讼"
     max_page = 1
     case_type = "普通案例"
-    search = Crawl_Bashou(search_word, max_page, case_type)
+    search = Scrape_Bashou(search_word, max_page, case_type)
     try:
-        
+
         case_result = search.search()
         with codecs.open("bashou_new_case.json", "w", encoding="utf-8") as f:
             json.dump(case_result, f, ensure_ascii=False, indent=4)

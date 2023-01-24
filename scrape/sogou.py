@@ -7,14 +7,16 @@ from selenium.common import exceptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class Scrape_Wechat:
+class Scrape_Sogou:
     def __init__(self, search_word, max_page):
-        url = "https://weixin.sogou.com/"
+        url = "https://www.sogou.com/"
         self.url = url
         self.search_word = search_word
         self.max_page = max_page
-        self.browser = webdriver.Remote('http://selenium-hub:4444/wd/hub',
-                          desired_capabilities=DesiredCapabilities.CHROME)
+        self.browser = webdriver.Remote(
+            "http://selenium-hub:4444/wd/hub",
+            desired_capabilities=DesiredCapabilities.CHROME,
+        )
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)  # 超时时长为10s
         self.result = {}
@@ -43,9 +45,7 @@ class Scrape_Wechat:
         while True:
             s += 1
             try:
-                results = self.browser.find_elements(
-                    By.CSS_SELECTOR, ".txt-box > h3 > a"
-                )
+                results = self.browser.find_elements(By.CSS_SELECTOR, ".vr-title > a")
                 for result in results:
                     if result.get_attribute("href"):
                         # 搜索结果的标题
@@ -54,13 +54,10 @@ class Scrape_Wechat:
                         link = result.get_attribute("href")
                         if link not in self.result.keys():
                             self.result[link] = title
-
             except exceptions.StaleElementReferenceException as e:
                 print("查找元素异常")
                 print("重新获取元素")
-                results = self.browser.find_elements(
-                    By.CSS_SELECTOR, ".txt-box > h3 > a"
-                )
+                results = self.browser.find_elements(By.CSS_SELECTOR, ".vr-title > a")
                 for result in results:
                     if result.get_attribute("href"):
                         # 搜索结果的标题
@@ -107,7 +104,8 @@ if __name__ == "__main__":
 
     search_word = "selenium"
     max_page = 3
-    search = Scrape_Wechat(search_word, max_page)
-    df_wechat = search.search()
-    with codecs.open("wechat_case.json", "w", encoding="utf-8") as f:
-        json.dump(df_wechat, f, ensure_ascii=False, indent=4)
+    search = Scrape_Sogou(search_word, max_page)
+    df_sogou = search.search()
+    search.tear_down()
+    with codecs.open("sogou_case.json", "w", encoding="utf-8") as f:
+        json.dump(df_sogou, f, ensure_ascii=False, indent=4)

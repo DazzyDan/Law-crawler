@@ -20,8 +20,6 @@
             justify-content: center;
             align-items: center
         }
-    
-        
         
         .search {
             background-color: #fff;
@@ -160,10 +158,11 @@
           </div>
         </div>
     </nav>
+    <div id="loading" style="display:none; text-align: center;"><img src="/static/loading.gif" alt="" /></div>
     <!-- Navbar -->
     
     <!-- Search bar -->
-    <div class="search-bar">
+    <div class="search-bar" id="content">
             <div class="container">
                 <!-- Search bar nav-->
                 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
@@ -202,7 +201,7 @@
                                                     <option value="搜狗">搜狗</option>
                                                     <option value="微信">微信</option>
                                                 </select>
-                                                <button type="submit" class="search-btn btn btn-secondary">搜索</button> 
+                                                <button type="submit" class="search-btn btn btn-secondary" onclick="loading();">搜索</button> 
                                             </div> 
                                         </div> 
                                     </div> 
@@ -233,7 +232,7 @@
                                                     <option value="高院案例">高院案例</option>
                                                     <option value="普通案例">普通案例</option>
                                                 </select>
-                                                <button type="submit" class="search-btn btn btn-secondary">搜索</button> 
+                                                <button type="submit" class="search-btn btn btn-secondary" onclick="loading();">搜索</button> 
                                             </div> 
                                         </div> 
                                     </div> 
@@ -297,5 +296,11 @@
       <!-- Copyright -->
     </footer>
     <!-- Footer -->
+    <script type="text/javascript">
+        function loading(){
+            $("#loading").show();
+            $("#content").hide();       
+        }
+    </script>
   </body>
 </html>

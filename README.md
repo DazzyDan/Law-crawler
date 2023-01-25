@@ -36,18 +36,24 @@ Click on "Show more":
 More details about this case will be displayed.
 
 ## How to Install and Run the Project
+Put docker-compose.yaml into a folder
 
-First up, you are able to pull this image from docker hub.
+### Mac
+On a Mac you just need to right click on the target folder, go to services and New Terminal at Folder
+![image](https://user-images.githubusercontent.com/73490814/214628461-86d77f8c-de63-47da-bb91-88d53b161b7d.png)
+
 ```bash
-docker pull dazzydan/law_crawler:1.0
+docker-compose up
 ```
-Then, Run this image
-```bash
-docker-compose up -d
-```
+control + c to stop the Docker containers
+
+### Windows
+- Navigate to the serious-sql folder where docker-compose.yml lives in the explorer
+- Click on the address bar in Windows Explorer
+- Type cmd in the address bar and hit Enter
 
 ## How to Use the Project
-Portal page:  http://0.0.0.0:5000/
+Portal page:  http://0.0.0.0:8080/
 
 Selenium grid processing page: http://127.0.0.1:4444/
 

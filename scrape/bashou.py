@@ -165,8 +165,8 @@ class Scrape_Bashou:
             self.wait.until(
                 EC.element_to_be_clickable(
                     (
-                        By.XPATH,
-                        "/html/body/div[1]/div[3]/div/div/div/div/div[1]/div[1]/div/div[2]/button",
+                        By.CSS_SELECTOR,
+                        ".search_list_header>.header-top>.header-content>.right>button",
                     )
                 )
             ).click()

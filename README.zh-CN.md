@@ -1,7 +1,8 @@
-# 法律案件爬虫
-- [English](README.md)
+# Law case crawler | 法律案例爬虫
 
-法律案件爬虫是一个从三大搜索引擎（百度、搜狗和微信）和两个案件搜索网站（无讼案例和把手案例）爬取、可视化案件的项目。这个项目使用Selenium grid docker、Flask 和 gunicorn。这是第一个版本。在下一个版本中，它将实现并行处理并将获取的数据存储在数据库中以加速处理并最大限度地减少缓存。
+-   [简体中文](README.zh-CN.md)
+
+案件爬虫是一个从三大搜索引擎（百度、搜狗和微信）和两个案件搜索网站（武松和巴手）抓取、抓取和可视化案件的项目。它与 Selenium grid docker、Flask 和 gunicorn 一起执行。这是第一个版本。在下一个版本中，它将实现并行处理并将获取的数据存储在数据库中以加速处理并最大限度地减少缓存。
 
 ## 结构
 
@@ -21,14 +22,15 @@
 
 ### 结果页面
 
-gridjs是用来实现和美化table的。 Grid.js 是一个免费的开源 JavaScript 表格插件。它可以实现这些功能：搜索关键词，排序。
+gridjs是用来实现table的。 Grid.js 是一个免费的开源 JavaScript 表格插件。它可以实现这些功能：搜索关键词，排序。
 
 1.  搜索引擎的结果![0 0 0 0_5000_search-web](https://user-images.githubusercontent.com/73490814/214580092-96316127-042a-481b-8517-1923099f7ade.png)
 2.  案例网的结果<img width="1354" alt="image" src="https://user-images.githubusercontent.com/73490814/214585512-d7f1d19e-8f06-4fbd-b746-4aab39af825e.png">
 
 ![0 0 0 0_5000_search-case](https://user-images.githubusercontent.com/73490814/214585639-69165daf-0900-4cec-9c06-d93fd0e29eb5.png)
 
-点击“显示更多”：<img width="1361" alt="image" src="https://user-images.githubusercontent.com/73490814/214585922-06f21a67-8195-453c-8f75-a4c33381f439.png">
+Click on "Show more": 
+<img width="1361" alt="image" src="https://user-images.githubusercontent.com/73490814/214585922-06f21a67-8195-453c-8f75-a4c33381f439.png">
 
 将显示有关此案例的更多详细信息。
 
@@ -48,7 +50,7 @@ docker-compose up -d
 
 ## 如何使用该项目
 
-页面：[HTTP://0.0.0.0:5000/](http://0.0.0.0:5000/)
+门户页面：[HTTP://0.0.0.0:5000/](http://0.0.0.0:5000/)
 
 Selenium网格处理页面：[HTTP://127.0.0.1:4444/](http://127.0.0.1:4444/)
 
@@ -56,5 +58,5 @@ Selenium网格处理页面：[HTTP://127.0.0.1:4444/](http://127.0.0.1:4444/)
 
 ## 未来改进
 
-1.  并行处理
+1.  平行游行
 2.  数据库

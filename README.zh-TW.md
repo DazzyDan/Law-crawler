@@ -1,4 +1,6 @@
-# 案件爬蟲
+# Law case crawler | 法律案例爬蟲
+
+-   [简体中文](README.zh-CN.md)
 
 案件爬蟲是一個從三大搜索引擎（百度、搜狗和微信）和兩個案件搜索網站（武松和巴手）抓取、抓取和可視化案件的項目。它與 Selenium grid docker、Flask 和 gunicorn 一起執行。這是第一個版本。在下一個版本中，它將實現並行處理並將獲取的數據存儲在數據庫中以加速處理並最大限度地減少緩存。
 
@@ -29,7 +31,7 @@ gridjs是用來實現table的。 Grid.js 是一個免費的開源 JavaScript 表
 
 點擊“顯示更多”：<img width="1361" alt="image" src="https://user-images.githubusercontent.com/73490814/214585922-06f21a67-8195-453c-8f75-a4c33381f439.png">
 
-More details about this case will be displayed.
+將顯示有關此案例的更多詳細信息。
 
 ## 如何安裝和運行項目
 

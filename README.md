@@ -1,5 +1,5 @@
-# Law case crawler 法律案例爬虫
-- [简体中文](#https://github.com/DazzyDan/Law-crawler/blob/5cc1fb608177b94eacf251c79030a1741ed86d57/README.zh-CN.md)
+# Law case crawler | 法律案例爬虫
+- [简体中文](README.zh-CN.md)
 
 Law case crawler is a project which to crawl, scrape and visualize law cases from three search engine (Baidu, Sogou and Wechat) and two law case search websites (wusong and bashou). It executes with Selenium grid docker, Flask and gunicorn. This is the first version. In the next version, it will implement parallel processes and store the acquired data in the database to accelerate processing and minimize caching. 
 

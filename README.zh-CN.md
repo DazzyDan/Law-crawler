@@ -1,7 +1,8 @@
-# 法律案件爬虫
-- [English](README.md)
+# Law case crawler | 法律案例爬虫
 
-法律案件爬虫是一个从三大搜索引擎（百度、搜狗和微信）和两个案件搜索网站（无讼案例和把手案例）爬取、可视化案件的项目。这个项目使用Selenium grid docker、Flask 和 gunicorn。这是第一个版本。在下一个版本中，它将实现并行处理并将获取的数据存储在数据库中以加速处理并最大限度地减少缓存。
+-   [简体中文](README.zh-CN.md)
+
+案件爬虫是一个从三大搜索引擎（百度、搜狗和微信）和两个案件搜索网站（武松和巴手）抓取、抓取和可视化案件的项目。它与 Selenium grid docker、Flask 和 gunicorn 一起执行。这是第一个版本。在下一个版本中，它将实现并行处理并将获取的数据存储在数据库中以加速处理并最大限度地减少缓存。
 
 ## 结构
 
@@ -21,7 +22,7 @@
 
 ### 结果页面
 
-gridjs是用来实现和美化table的。 Grid.js 是一个免费的开源 JavaScript 表格插件。它可以实现这些功能：搜索关键词，排序。
+gridjs是用来实现table的。 Grid.js 是一个免费的开源 JavaScript 表格插件。它可以实现这些功能：搜索关键词，排序。
 
 1.  搜索引擎的结果![0 0 0 0_5000_search-web](https://user-images.githubusercontent.com/73490814/214580092-96316127-042a-481b-8517-1923099f7ade.png)
 2.  案例网的结果<img width="1354" alt="image" src="https://user-images.githubusercontent.com/73490814/214585512-d7f1d19e-8f06-4fbd-b746-4aab39af825e.png">
@@ -40,7 +41,7 @@ gridjs是用来实现和美化table的。 Grid.js 是一个免费的开源 JavaS
 docker pull dazzydan/law_crawler:1.0
 ```
 
-然后，运行这个图像
+Then, Run this image
 
 ```bash
 docker-compose up -d
@@ -48,13 +49,14 @@ docker-compose up -d
 
 ## 如何使用该项目
 
-页面：[HTTP://0.0.0.0:5000/](http://0.0.0.0:5000/)
+门户页面：[HTTP://0.0.0.0:5000/](http://0.0.0.0:5000/)
 
-Selenium网格处理页面：[HTTP://127.0.0.1:4444/](http://127.0.0.1:4444/)
+Selenium网格处理页面：<http://127.0.0.1:4444/>
 
-如果您想发现在爬行过程中发生了什么，可以连接到 VNC 查看器。：[HTTP://127.0.0.1:6900/](http://127.0.0.1:6900/)
+If you want to discover what happens during the crawling, connecting to VNC viewer is available.:
+[HTTP://127.0.0.1:6900/](http://127.0.0.1:6900/)
 
 ## 未来改进
 
-1.  并行处理
+1.  平行游行
 2.  数据库

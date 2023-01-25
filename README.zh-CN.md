@@ -33,22 +33,25 @@ gridjs是用来实现和美化table的。 Grid.js 是一个免费的开源 JavaS
 将显示有关此案例的更多详细信息。
 
 ## 如何安装和运行项目
+把 docker-compose.yaml 放在新建的文件夹里
 
-首先，您可以从 docker hub 中拉取该镜像。
-
-```bash
-docker pull dazzydan/law_crawler:1.0
-```
-
-然后，运行这个图像
+### Mac
+右键点击目标文件夹，选择新建位于文件夹位置的终端窗口
+![image](https://user-images.githubusercontent.com/73490814/214628461-86d77f8c-de63-47da-bb91-88d53b161b7d.png)
 
 ```bash
-docker-compose up -d
+docker-compose up
 ```
+control + c to 停止docker的containers
+
+### Windows
+- 定位到你存有docker-compose.yaml的文件夹
+- 点击地址栏
+- 在地址栏输入cmd，按下回车
 
 ## 如何使用该项目
 
-页面：[HTTP://0.0.0.0:5000/](http://0.0.0.0:5000/)
+页面：[HTTP://0.0.0.0:8080/](http://0.0.0.0:8080/)
 
 Selenium网格处理页面：[HTTP://127.0.0.1:4444/](http://127.0.0.1:4444/)
 

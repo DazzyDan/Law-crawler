@@ -48,7 +48,7 @@ docker-compose up
 control + c to stop the Docker containers
 
 ### Windows
-- Navigate to the serious-sql folder where docker-compose.yml lives in the explorer
+- Navigate to the target folder where docker-compose.yml lives in the explorer
 - Click on the address bar in Windows Explorer
 - Type cmd in the address bar and hit Enter
 

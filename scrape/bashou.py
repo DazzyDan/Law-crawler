@@ -7,12 +7,16 @@ from selenium.common import exceptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import NoSuchElementException
 import time
-
+from dotenv import load_dotenv
+import os
 
 class Scrape_Bashou:
     def __init__(self, search_word, max_page, case_type):
         url = "https://www.lawsdata.com/#/home"
         self.url = url
+        load_dotenv() 
+        self.USER = os.getenv("BASHOU_USER")
+        self.PASSWORD = os.getenv("BASHOU_PW")
         time.sleep(5)
         self.browser = webdriver.Remote(
             "http://selenium-hub:4444/wd/hub",
@@ -155,7 +159,6 @@ class Scrape_Bashou:
                 return False
 
     def login(self):
-        pass
         # login box
         try:
             print("Click Login box..")
@@ -193,7 +196,7 @@ class Scrape_Bashou:
                 )
             )
         )
-        user_input.send_keys("18145132237")
+        user_input.send_keys(self.USER)
         # input password
         pw_input = self.wait.until(
             EC.presence_of_element_located(
@@ -203,7 +206,7 @@ class Scrape_Bashou:
                 )
             )
         )
-        pw_input.send_keys("bYK3B27i3jtF6")
+        pw_input.send_keys(self.PASSWORD)
 
         # login button
         login_btn = self.browser.find_element(

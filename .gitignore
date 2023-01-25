@@ -5,3 +5,4 @@ Procfile
 target/
 *.json
 case_example/
+*.env

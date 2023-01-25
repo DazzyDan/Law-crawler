@@ -7,6 +7,8 @@ from selenium.common import exceptions
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
+from dotenv import load_dotenv
+import os
 
 
 class Scrape_Wusong:
@@ -14,6 +16,9 @@ class Scrape_Wusong:
         url = "https://www.itslaw.com/home"
         self.url = url
         time.sleep(5)
+        load_dotenv() 
+        self.USER = os.getenv("WUSONG_USER")
+        self.PASSWORD = os.getenv("WUSONG_PW")
         self.browser = webdriver.Remote(
             "http://selenium-hub:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.CHROME,
@@ -172,7 +177,7 @@ class Scrape_Wusong:
                 )
             )
         )
-        user_input.send_keys("18145132237")
+        user_input.send_keys(self.USER)
         # input password
         pw_input = self.wait.until(
             EC.presence_of_element_located(
@@ -182,7 +187,7 @@ class Scrape_Wusong:
                 )
             )
         )
-        pw_input.send_keys("EX0w&6t$4A0")
+        pw_input.send_keys(self.PASSWORD)
         pw_input.send_keys(Keys.ENTER)
 
     def content(self):

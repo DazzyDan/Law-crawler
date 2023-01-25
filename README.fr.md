@@ -1,6 +1,8 @@
-# Crawler de cas de droit
+# Crawler d'affaires juridiques | Crawler d'affaires juridiques
 
-Law case crawler is a project which to crawl, scrape and visualize law cases from three search engine (Baidu, Sogou and Wechat) and two law case search websites (wusong and bashou). It executes with Selenium grid docker, Flask and gunicorn. This is the first version. In the next version, it will implement parallel processes and store the acquired data in the database to accelerate processing and minimize caching. 
+-   [Chinois simplifié](README.zh-CN.md)
+
+Law case crawler est un projet qui permet d'explorer, de gratter et de visualiser des cas de droit à partir de trois moteurs de recherche (Baidu, Sogou et Wechat) et de deux sites Web de recherche de cas de droit (wusong et bashou). Il s'exécute avec le docker de grille Selenium, Flask et gunicorn. Ceci est la première version. Dans la prochaine version, il mettra en œuvre des processus parallèles et stockera les données acquises dans la base de données pour accélérer le traitement et minimiser la mise en cache.
 
 ## La structure
 
@@ -20,7 +22,7 @@ Il est capable de sélectionner différents types de cas.![0 0 0 0_5000\_ (2)](h
 
 ### Result page
 
-gridjs is used to realize the table. Grid.js is a Free and open-source JavaScript table plugin. It can implement these functions: search key words, sorting.
+gridjs est utilisé pour réaliser la table. Grid.js est un plugin de tableau JavaScript gratuit et open-source. Il peut mettre en œuvre ces fonctions : recherche de mots clés, tri.
 
 1.  Les résultats des moteurs de recherche![0 0 0 0_5000_search-web](https://user-images.githubusercontent.com/73490814/214580092-96316127-042a-481b-8517-1923099f7ade.png)
 2.  Résultats des toiles de cas<img width="1354" alt="image" src="https://user-images.githubusercontent.com/73490814/214585512-d7f1d19e-8f06-4fbd-b746-4aab39af825e.png">

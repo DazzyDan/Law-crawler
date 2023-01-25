@@ -29,8 +29,7 @@ gridjs是用来实现table的。 Grid.js 是一个免费的开源 JavaScript 表
 
 ![0 0 0 0_5000_search-case](https://user-images.githubusercontent.com/73490814/214585639-69165daf-0900-4cec-9c06-d93fd0e29eb5.png)
 
-Click on "Show more": 
-<img width="1361" alt="image" src="https://user-images.githubusercontent.com/73490814/214585922-06f21a67-8195-453c-8f75-a4c33381f439.png">
+点击“显示更多”：<img width="1361" alt="image" src="https://user-images.githubusercontent.com/73490814/214585922-06f21a67-8195-453c-8f75-a4c33381f439.png">
 
 将显示有关此案例的更多详细信息。
 

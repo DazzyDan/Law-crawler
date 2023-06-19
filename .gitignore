@@ -1,8 +1,14 @@
 __pycache__
 .DS_Store
-venv/
+env/
 Procfile
 target/
 *.json
 case_example/
 *.env
+lib/
+bin/
+build/
+chromedriver_mac64/
+dist/
+include/

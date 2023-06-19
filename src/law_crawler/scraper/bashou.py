@@ -10,11 +10,12 @@ import time
 from dotenv import load_dotenv
 import os
 
+
 class Scrape_Bashou:
     def __init__(self, search_word, max_page, case_type):
         url = "https://www.lawsdata.com/#/home"
         self.url = url
-        load_dotenv() 
+        load_dotenv()
         self.USER = os.getenv("BASHOU_USER")
         self.PASSWORD = os.getenv("BASHOU_PW")
         time.sleep(5)

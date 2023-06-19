@@ -115,5 +115,5 @@ if __name__ == "__main__":
     search = Scrape_Baidu(search_word, max_page)
     df_baidu = search.search()
     print(df_baidu)
-    with codecs.open("baidu_case.json", "w", encoding="utf-8") as f:
-        json.dump(df_baidu, f, ensure_ascii=False, indent=4)
+    # with codecs.open("baidu_case.json", "w", encoding="utf-8") as f:
+    #     json.dump(df_baidu, f, ensure_ascii=False, indent=4)

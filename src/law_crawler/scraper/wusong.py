@@ -16,7 +16,7 @@ class Scrape_Wusong:
         url = "https://www.itslaw.com/home"
         self.url = url
         time.sleep(5)
-        load_dotenv() 
+        load_dotenv()
         self.USER = os.getenv("WUSONG_USER")
         self.PASSWORD = os.getenv("WUSONG_PW")
         self.browser = webdriver.Remote(
